@@ -1,0 +1,28 @@
+!!! 5
+%html
+  %head
+    %title= title
+    %base(href=base)
+    %meta(http-equiv="Content-Type" content="text/html; charset=utf-8")
+    %link(rel="stylesheet" href="../../home.css" type="text/css" media="screen, projection")
+    %script(type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js")
+    %script(type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/masonry/2.1.08/jquery.masonry.min.js")
+
+%body
+  %h1= title
+
+  #container
+    - for item in articles
+      .item
+        = item
+
+  :javascript
+    $(function() {
+      setTimeout(function() {
+        $('#container').masonry({
+          itemSelector: '.item',
+          columnWidth: 300
+        })
+      }, 1000);
+    });
+

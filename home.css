@@ -1,0 +1,40 @@
+body { background: #f0f0f0; }
+
+.item {
+  width: 280px;
+  margin: 10px;
+  float: left;
+  background: white;
+  border-radius: 5px;
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  border-bottom-color: #b0b0b0;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+}
+
+.col2 {
+  width: 440px;
+}
+
+h1 {
+  text-align: center;
+}
+
+h2 {
+  margin: 10px;
+  font-family: ProximaNova, Arial, sans-serif;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.item img, .item p { max-width: 280px; }
+
+.item p {
+  margin: 10px;
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  height: 126px;
+  line-height: 18px;
+}
