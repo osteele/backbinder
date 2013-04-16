@@ -3,10 +3,10 @@ body { background: #f0f0f0; }
 .item {
   width: 280px;
   margin: 10px;
-  float: left;
+  /*float: left;*/
   background: white;
-  border-radius: 5px;
-  position: relative;
+  border-radius: 2px;
+  /*position: relative;*/
   overflow-x: hidden;
   overflow-y: scroll;
   border-bottom-color: #b0b0b0;

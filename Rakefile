@@ -1,31 +1,34 @@
 require 'rake/clean'
-require 'redcarpet'
 require 'haml'
-require 'safe_yaml'
+require './project'
+
+project_dirname = ENV['PROJECT'] || 'ProGit'
 
 task :convert do
-  project_dirname = ENV['PROJECT'] || 'ProGit'
-  project_path = "dbox/#{project_dirname}"
+  project = Project.new(project_dirname)
+  FileUtils::mkdir_p "build"
+  open("build/index.html", 'w') do |f| f << project.index_html(:base => "../#{project.project_path}/") end
+end
 
-  config_path = File.join(project_path, "project.yml")
-  config = File.exists?(config_path) ? YAML::load(open(config_path), :safe => true) : {}
+task :upload do
+  project = Project.new(project_dirname)
+  AWS::S3::Base.establish_connection!(
+      :access_key_id     => ENV['AMAZON_ACCESS_KEY_ID'],
+      :secret_access_key => ENV['AMAZON_SECRET_ACCESS_KEY']
+    )
 
-  articles = Dir["#{project_path}/**/*.markdown"].map do |file|
-    puts File.basename(file)
-    markdown = Redcarpet::Markdown.new(Redcarpet::Render::XHTML, :autolink => true, :space_after_headers => true, :no_images => false)
-    html = markdown.render(open(file).read)
-    title = html[%r|<h1>(.*?)</h1>|, 1]
-    image = html[%r|<img\b[^>]*\bsrc="([^>"]+).*?>|, 1]
-    image = %Q|<img src="#{image}" max-width="50px"/>| if image
-    para = html[%r|<p>(.*?)</p>|]
-    "<h2>#{title}</h2>" + (image || para)
+  bucket_name = 'assets.matterfront.com'
+  bucket = AWS::S3::Bucket.find(bucket_name)
+
+  for path in project.assets
+    source_path = File.expand_path(path, project.project_path)
+    target_path = File.join(project.dirname, path)
+    next if bucket[target_path] and bucket[target_path].size == File.size(source_path)
+    # metadata = { 'x-amz-last-modified' => File.mtime(source_path).to_s }
+    puts "Uploading #{path}"
+    AWS::S3::S3Object.store(target_path, open(source_path), bucket_name, :access => :public_read)
   end
 
-  template = File.read('index.haml')
-  title = config['title'] || project_dirname
-  base = "../#{project_path}/"
-  haml_engine = Haml::Engine.new(template)
-  output = haml_engine.render(binding)
-  FileUtils::mkdir_p "build"
-  open("build/index.html", 'w') do |f| f << output end
+  AWS::S3::S3Object.store(File.join(project.dirname, "index.html"), project.index_html, bucket_name, :access => :public_read)
+  AWS::S3::S3Object.store(File.join(project.dirname, "home.css"), File.open("home.css"), bucket_name, :access => :public_read)
 end
