@@ -12,7 +12,7 @@ end
 def active_project
   project = Project.new(project_dirname)
   project.source = FileSource.new('dbox')
-  project.source = DropboxSource.new if ENV['SOURCE'] =~ /^dropbox$/i
+  project.source = DropboxSource.new(ENV['DROPBOX_USER']) if ENV['DROPBOX_USER']
   project
 end
 

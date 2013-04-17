@@ -2,3 +2,5 @@ dbox
 agenda.md
 .env
 build
+
+*.sqlite

@@ -1,7 +1,13 @@
 require 'dropbox_sdk'
+require './config/database.rb'
 
 class DropboxSource
-  def initialize
+  def initialize(user_or_email)
+    user = user_or_email
+    user = User.first(:email => user) if user.is_a?(String)
+    raise "No user named #{user_or_email}" unless user
+    @dropbox_access_token = user.dropbox_access_token
+    @dropbox_access_secret = user.dropbox_access_secret
   end
 
   def exists?(path)
@@ -33,7 +39,13 @@ class DropboxSource
     file_metadata['bytes']
   end
 
+  def folders(path)
+    client.metadata(path)['contents'].map { |entry| OpenStruct.new(entry) }.select(&:is_dir).map(&:path).map { |path| path[1..-1] }
+  end
+
   private
+
+  attr_reader :dropbox_access_token, :dropbox_access_secret
 
   def resolve(path)
     path # File.join('Music', path)
@@ -42,7 +54,7 @@ class DropboxSource
   def session
     @session ||= begin
       session = DropboxSession.new(ENV['DROPBOX_APP_KEY'], ENV['DROPBOX_APP_SECRET'])
-      session.set_access_token ENV['DROPBOX_ACCESS_TOKEN'], ENV['DROPBOX_ACCESS_SECRET']
+      session.set_access_token dropbox_access_token, dropbox_access_secret
       session
     end
   end
