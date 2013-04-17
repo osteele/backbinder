@@ -1,4 +1,4 @@
-class FileStorage
+class FileSource
   attr_reader :root
 
   def initialize(root)

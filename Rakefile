@@ -1,7 +1,7 @@
 require 'rake/clean'
 require 'haml'
 require './project'
-require './file_storage'
+require './file_source'
 require './publisher'
 
 def project_dirname
@@ -9,7 +9,9 @@ def project_dirname
 end
 
 def active_project
-  Project.new(project_dirname)
+  project = Project.new(project_dirname)
+  project.source = FileSource.new('dbox')
+  project
 end
 
 task :convert do
@@ -19,7 +21,8 @@ task :convert do
 end
 
 task :publish do
+  project = active_project
   publisher = Publisher.new
-  publisher.publish(active_project)
+  publisher.publish(project)
   puts "Open #{publisher.url}"
 end
