@@ -24,14 +24,7 @@ class Publisher
 
     target_path = File.join(target_root, 'index.html')
     upload project.index_html, project.index_html.size, target_path
-    @index_object = bucket[target_path]
-    # p @index_object
-  end
-
-  def url
-    uri = URI(@index_object.url(:expires => nil))
-    uri.query = nil
-    uri.to_s
+    "http://#{bucket_name}/#{target_root}/index.html"
   end
 
   private

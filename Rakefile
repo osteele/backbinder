@@ -25,6 +25,6 @@ end
 task :publish do
   project = active_project
   publisher = Publisher.new
-  publisher.publish(project)
-  puts "Open #{publisher.url}"
+  url = publisher.publish(project)
+  puts "Open #{url}"
 end

@@ -13,8 +13,8 @@ class FileSource
     Dir[File.join(root, pattern)].map { |path| Pathname.new(path).relative_path_from(Pathname.new(root)).to_s }
   end
 
-  def open(path)
-    File.open(resolve(path))
+  def open(path, &block)
+    File.open(resolve(path), &block)
   end
 
   def read(path)

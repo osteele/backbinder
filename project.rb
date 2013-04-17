@@ -11,7 +11,7 @@ class Project
 
   def config
     config_path = File.join(root, "project.yml")
-    @config ||= source.exists?(config_path) ? YAML::load(source.open(config_path), :safe => true) : {}
+    @config ||= source.exists?(config_path) ? source.open(config_path) { |file| YAML::load(file, :safe => true) } : {}
   end
 
   def sources
@@ -30,7 +30,7 @@ class Project
     @articles ||= sources.map do |file|
       # puts File.basename(file)
       markdown = Redcarpet::Markdown.new(Redcarpet::Render::XHTML, :autolink => true, :space_after_headers => true, :no_images => false)
-      html = markdown.render(source.open(file).read)
+      html = markdown.render(source.read(file))
       title = html[%r|<h1>(.*?)</h1>|, 1]
       image = html[%r|<img\b[^>]*\bsrc="([^>"]+).*?>|, 1]
       image = %Q|<img src="#{image}" max-width="50px"/>| if image

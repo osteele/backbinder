@@ -15,12 +15,13 @@ class DropboxSource
 
   def find(path)
     prefix, suffix = resolve(path).split('/**/')
-    query = suffix.split('*').join # TODO error if wildcard anywhere except beginning or end
+    raise "Can only process * as suffix or prefix" if suffix =~ /^.+\*.+$/
+    query = suffix.split('*').join
     client.search(prefix, query).map { |entry| entry['path'].sub(/^\//, '') }
   end
 
-  def open(path)
-    StringIO.open(read(path))
+  def open(path, &block)
+    StringIO.open(read(path), &block)
   end
 
   def read(path)
