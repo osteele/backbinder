@@ -1,5 +1,6 @@
 require 'uri'
 require 'aws/s3'
+require './config/database.rb'
 
 class Publisher
   attr_reader :bucket_name
@@ -8,7 +9,7 @@ class Publisher
     @bucket_name = 'assets.matterfront.com'
   end
 
-  def publish(project)
+  def publish(user, project)
     source = project.source
     target_root = project.root
 
@@ -24,7 +25,13 @@ class Publisher
 
     target_path = File.join(target_root, 'index.html')
     upload project.index_html, project.index_html.size, target_path
-    "http://#{bucket_name}/#{target_root}/index.html"
+
+    url = "http://#{bucket_name}/#{target_root}/index.html"
+    model = Models::Project.first_or_create(:user => user, :name => project.name)
+    # FIXME race condition on the timestamp
+    model.attributes = { :published_at => Time.now, :public_url => url }
+    model.save
+    url
   end
 
   private

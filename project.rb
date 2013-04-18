@@ -2,11 +2,12 @@ require 'redcarpet'
 require 'safe_yaml'
 
 class Project
-  attr_reader :root
+  attr_reader :root, :name
   attr_accessor :source
 
   def initialize(dirname)
     @root = dirname
+    @name = dirname
   end
 
   def config

@@ -6,7 +6,12 @@
 
   %body(ng-app)
     %div(ng-controller="ProjectsCtrl")
-      You have {{projects.length}} projects.
+      {{projects.length}} project(s):
       %ul
         %li(ng-repeat="project in projects")
           [{{$index + 1}}] {{project.name}}
+
+      {{folders.length}} Dropbox folder(s):
+      %ul
+        %li(ng-repeat="folder in folders")
+          [{{$index + 1}}] {{folder.name}}

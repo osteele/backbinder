@@ -3,6 +3,8 @@ require './config/database'
 require './dropbox_source'
 
 class App < Sinatra::Base
+  include ::Models
+
   configure :development do
     register Sinatra::Reloader
     use BetterErrors::Middleware
@@ -11,7 +13,7 @@ class App < Sinatra::Base
 
   get '/' do
     redirect '/auth/dropbox' unless session[:uid]
-    user = ::User.get(session[:uid])
+    user = User.get(session[:uid])
     redirect '/auth/dropbox' unless user
     redirect '/waitlist' unless user.authorized
     haml :index
@@ -24,7 +26,14 @@ class App < Sinatra::Base
   get '/projects.json' do
     content_type 'application/json'
     # return [401, MultiJson.encode(:error => "Unauthorized")] unless params[:id] == session[:uid].to_s
-    user = ::User.get(session[:uid])
+    user = User.get(session[:uid])
+    MultiJson.encode(user.projects)
+  end
+
+  get '/folders.json' do
+    content_type 'application/json'
+    # return [401, MultiJson.encode(:error => "Unauthorized")] unless params[:id] == session[:uid].to_s
+    user = User.get(session[:uid])
     MultiJson.encode(DropboxSource.new(user).folders('/').map { |name| {:name => name} })
   end
 
@@ -34,10 +43,9 @@ class App < Sinatra::Base
 
   get '/auth/:provider/callback' do
     content_type 'text/plain'
-    # https://github.com/intridea/omniauth/wiki/Auth-Hash-Schema
     email = request.env['omniauth.auth']['info']['email']
     credentials = request.env['omniauth.auth']['credentials']
-    user = ::User.first_or_create(:email => email)
+    user = User.first_or_create(:email => email)
     user.attributes = {
         :dropbox_access_token => credentials.token,
         :dropbox_access_secret => credentials.secret
