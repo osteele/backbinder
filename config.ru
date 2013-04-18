@@ -15,6 +15,7 @@ end
 map '/assets' do
   environment = Sprockets::Environment.new
   environment.append_path 'app'
+  environment.append_path 'components/bootstrap/docs/assets'
   run environment
 end
 
