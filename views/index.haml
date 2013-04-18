@@ -25,7 +25,9 @@
             %td {{folder.name}}
             %td
             %td
-              %a Publish
+              %a(ng:hide="folder.publishing || folder.error" ng:click="publish_folder(folder)") Publish
+              %span(ng:show="folder.publishing") Publishing&hellip;
+              %span(ng:show="folder.error") {{folder.error}}
 
       %div(ng:show="!projects.length && !unpublished.length")
         Add a sample project to your Dropbox folder?

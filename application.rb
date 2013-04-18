@@ -1,5 +1,7 @@
 require 'sinatra/reloader' if development?
 require './config/database'
+require './project'
+require './publisher'
 require './dropbox_source'
 
 class App < Sinatra::Base
@@ -35,6 +37,16 @@ class App < Sinatra::Base
     # return [401, MultiJson.encode(:error => "Unauthorized")] unless params[:id] == session[:uid].to_s
     user = User.get(session[:uid])
     MultiJson.encode(DropboxSource.new(user.dropbox_access_token, user.dropbox_access_secret).folders('/').map { |name| {:name => name} })
+  end
+
+  post '/folder/publish' do
+    user = User.get(session[:uid])
+    params = JSON.parse(request.env['rack.input'].read)
+    project = ::Project.new(params['name'])
+    project.source = DropboxSource.new(user.dropbox_access_token, user.dropbox_access_secret)
+    publisher = Publisher.new
+    url = publisher.publish(user, project)
+    "url"
   end
 
   get '/waitlist' do
