@@ -1,5 +1,6 @@
 require 'uri'
 require 'aws/s3'
+require 'parallel'
 require './config/database.rb'
 
 class Publisher
@@ -13,7 +14,7 @@ class Publisher
     source = project.source
     target_root = project.root
 
-    for path in project.asset_paths do
+    Parallel.each(project.asset_paths, :in_threads => 4) do |path|
       source_path = File.join(project.root, path)
       target_path = File.join(target_root, path)
       upload source.open(source_path), source.size(source_path), target_path

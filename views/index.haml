@@ -23,6 +23,7 @@
             %td
               %a(ng:show="project.public_url" href="{{project.public_url}}") View
               %a(ng:hide="project.public_url" ng:click="publish_project(project)") Publish
+              %a(ng:show="project.public_url" ng:click="publish_project(project)") Republish
           %tr(ng:repeat="folder in unpublished")
             %td {{folder.name}}
             %td

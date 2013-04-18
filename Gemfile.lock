@@ -109,6 +109,7 @@ GEM
     omniauth-oauth (1.0.1)
       oauth
       omniauth (~> 1.0)
+    parallel (0.6.4)
     pry (0.9.12)
       coderay (~> 1.0.5)
       method_source (~> 0.8)
@@ -180,6 +181,7 @@ DEPENDENCIES
   multi_json (~> 1.0.3)
   omniauth
   omniauth-dropbox
+  parallel
   pry
   rack
   rake

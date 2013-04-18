@@ -8,6 +8,7 @@ gem 'firebase_token_generator'
 gem 'httparty'
 gem 'resque'
 gem 'resque-loner'
+gem 'parallel'
 
 group :web do
   gem 'rack'
