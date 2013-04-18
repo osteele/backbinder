@@ -20,10 +20,10 @@ module Models
   class Project
     include DataMapper::Resource
 
-    belongs_to :user, :unique_index => :user_and_name
+    belongs_to :user
 
     property :id, Serial
-    property :name, String, :length => 256, :required => true, :unique_index => :user_and_name
+    property :name, String, :length => 256, :required => true
     property :published_at, DateTime
     property :public_url, String
   end

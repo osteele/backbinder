@@ -20,8 +20,9 @@
           %tr(ng:repeat="project in projects")
             %td {{project.name}}
             %td {{project.published_at | date: 'fullDate'}}
-            %td(ng:show="project.public_url")
-              %a(href="{{project.public_url}}") View
+            %td
+              %a(ng:show="project.public_url" href="{{project.public_url}}") View
+              %a(ng:hide="project.public_url" ng:click="publish_project(project)") Publish
           %tr(ng:repeat="folder in unpublished")
             %td {{folder.name}}
             %td

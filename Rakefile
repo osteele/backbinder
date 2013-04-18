@@ -40,6 +40,7 @@ end
 
 require 'resque/tasks'
 require './update_dropbox_folder_list_worker'
+require './publication_worker'
 
 task :environment do
   require './config/database'

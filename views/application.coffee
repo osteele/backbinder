@@ -23,7 +23,7 @@
         projects = res.data
         merge()
 
-    $http.get('/folders.json')
+  $http.get('/folders.json')
 
   reload()
 
@@ -32,6 +32,11 @@
     $http.post('/folder/publish', {name: folder.name})
       .success(reload)
       .error(-> folder.publishing = false; folder.error = "Error")
+
+  $scope.publish_project = (project) ->
+    project.publishing = true
+    $http.post('/project/publish', {id: project.id})
+
 
   merge = ->
     project_names = (project.name for project in projects)

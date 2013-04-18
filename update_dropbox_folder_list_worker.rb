@@ -1,11 +1,12 @@
+require './config/database'
+require './config/resque'
 require 'resque'
 require 'resque-loner'
-require './config/database'
 require './firebase'
 
 class UpdateDropboxFolderListWorker
   include Resque::Plugins::UniqueJob
-  @queue = :update_dropbox_folder_list_worker
+  @queue = :dropbox_reader
 
   def self.perform(user_id)
     user = ::Models::User.get(user_id)

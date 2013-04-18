@@ -6,6 +6,7 @@ require './publisher'
 require './dropbox_source'
 require './firebase'
 require './update_dropbox_folder_list_worker'
+require './publication_worker'
 
 class App < Sinatra::Base
   include ::Models
@@ -54,11 +55,16 @@ class App < Sinatra::Base
   post '/folder/publish' do
     user = User.get(session[:uid])
     params = JSON.parse(request.env['rack.input'].read)
-    project = ::Project.new(params['name'])
-    project.source = DropboxSource.new(user.dropbox_access_token, user.dropbox_access_secret)
-    publisher = Publisher.new
-    publisher.publish(user, project)
-    "ok"
+    project = Models::Project.first_or_create(:user => user, :name => params['name'])
+    Resque.enqueue PublicationWorker, project.id
+    "queued"
+  end
+
+  post '/project/publish' do
+    params = JSON.parse(request.env['rack.input'].read)
+    project = Models::Project.get(params['id'])
+    Resque.enqueue PublicationWorker, project.id
+    "queued"
   end
 
   get '/waitlist' do
