@@ -1,10 +1,12 @@
 source 'https://rubygems.org'
+ruby '1.9.3'
 
 gem 'rake'
 
 group :web do
   gem 'rack'
   gem 'sinatra'
+  gem 'sprockets'
   gem 'omniauth'
   gem 'omniauth-dropbox'
   gem 'multi_json', '~> 1.0.3' # required by omniauth-dropbox; data_mapper can't work with recent versions

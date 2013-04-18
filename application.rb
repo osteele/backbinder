@@ -34,7 +34,7 @@ class App < Sinatra::Base
     content_type 'application/json'
     # return [401, MultiJson.encode(:error => "Unauthorized")] unless params[:id] == session[:uid].to_s
     user = User.get(session[:uid])
-    MultiJson.encode(DropboxSource.new(user).folders('/').map { |name| {:name => name} })
+    MultiJson.encode(DropboxSource.new(user.dropbox_access_token, user.dropbox_access_secret).folders('/').map { |name| {:name => name} })
   end
 
   get '/waitlist' do

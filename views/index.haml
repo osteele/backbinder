@@ -1,17 +1,32 @@
 !!! 5
 %html
   %head
+    %link(rel="stylesheet" type="text/css" href="/assets/css/app.css")
+    %script(src='//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js')
     %script(src='//cdnjs.cloudflare.com/ajax/libs/angular.js/1.1.1/angular.min.js')
     %script(src='/application.js')
 
   %body(ng-app)
-    %div(ng-controller="ProjectsCtrl")
-      {{projects.length}} project(s):
-      %ul
-        %li(ng-repeat="project in projects")
-          [{{$index + 1}}] {{project.name}}
+    %h2 Projects
+    %div(ng:controller="ProjectsCtrl")
+      %table(ng:show="projects.length")
+        %thead
+          %tr
+            %th Name
+            %th Published
+            %th View
+        %tbody
+          %tr(ng:repeat="project in projects")
+            %td {{project.name}}
+            %td {{project.published_at | date: 'fullDate'}}
+            %td(ng:show="project.public_url")
+              %a(href="{{project.public_url}}") View
 
-      {{folders.length}} Dropbox folder(s):
-      %ul
-        %li(ng-repeat="folder in folders")
-          [{{$index + 1}}] {{folder.name}}
+      %div(ng:show="folders.length")
+        %h3 Unpublished Dropbox folder(s):
+        %ul
+          %li(ng:repeat="folder in folders")
+            [{{$index + 1}}] {{folder.name}}
+
+      %div(ng:show="!projects.length && !folders.length")
+        Add a sample project to your Dropbox folder?
