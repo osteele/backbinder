@@ -21,6 +21,10 @@ map '/assets' do
   run environment
 end
 
+map "/resque" do
+  run Resque::Server
+end
+
 map '/' do
   run App.new
 end

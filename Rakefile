@@ -37,3 +37,18 @@ task :publish do
   url = publisher.publish(current_user, project)
   puts "Open #{url}"
 end
+
+require 'resque/tasks'
+require './update_dropbox_folder_list_worker'
+
+task :environment do
+  require './config/database'
+  require './config/resque'
+end
+
+task 'resque:setup' => :environment do
+  ENV['QUEUE'] = '*'
+  Resque.before_fork = Proc.new do
+    DataObjects::Pooling.pools.each { |pool| pool.dispose }
+  end
+end

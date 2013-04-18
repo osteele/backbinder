@@ -3,8 +3,11 @@ ruby '1.9.3'
 
 gem 'rake'
 gem 'dotenv', :groups => [:development, :test]
+gem 'redis'
 gem 'firebase_token_generator'
 gem 'httparty'
+gem 'resque'
+gem 'resque-loner'
 
 group :web do
   gem 'rack'

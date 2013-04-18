@@ -1,15 +1,18 @@
 require 'sinatra/reloader' if development?
 require './config/database'
+require './config/resque'
 require './project'
 require './publisher'
 require './dropbox_source'
 require './firebase'
+require './update_dropbox_folder_list_worker'
 
 class App < Sinatra::Base
   include ::Models
 
   configure :development do
     register Sinatra::Reloader
+    Dir['**/*.rb'].each do |file| also_reload file end
     use BetterErrors::Middleware
     BetterErrors.application_root = File.dirname(__FILE__)
   end
@@ -44,12 +47,8 @@ class App < Sinatra::Base
   end
 
   get '/folders.json' do
-    content_type 'application/json'
-    # return [401, MultiJson.encode(:error => "Unauthorized")] unless params[:id] == session[:uid].to_s
-    user = User.get(session[:uid])
-    folder_names = DropboxSource.new(user.dropbox_access_token, user.dropbox_access_secret).folders('/').map { |name| {:name => name} }
-    Firebase.set("users/#{user.id}/folders", folder_names)
-    MultiJson.encode(folder_names)
+    Resque.enqueue UpdateDropboxFolderListWorker, session[:uid]
+    "queued"
   end
 
   post '/folder/publish' do
