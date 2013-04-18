@@ -2,6 +2,8 @@ require 'bundler/setup'
 Bundler.require :default, :web
 Bundler.require :development if ENV['RACK_ENV'] == 'development'
 require 'sprockets'
+require 'dotenv'
+Dotenv.load
 require './application'
 
 use Rack::Session::Cookie, :secret => 'yuv9vorc7aw7or7i'

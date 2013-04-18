@@ -39,3 +39,5 @@ group :development do
   gem 'pry'
   gem 'shotgun'
 end
+
+gem 'dotenv-rails', :groups => [:development, :test]

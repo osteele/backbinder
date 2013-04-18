@@ -1,5 +1,7 @@
 require 'rake/clean'
 require 'haml'
+require 'dotenv'
+Dotenv.load
 require './config/database.rb'
 require './project'
 require './file_source'
