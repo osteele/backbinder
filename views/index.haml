@@ -10,24 +10,22 @@
   %body(ng-app)
     %h2 Projects
     %div(ng:controller="ProjectsCtrl")
-      %table(ng:show="projects.length")
+      %table(ng:show="projects.length || unpublished.length")
         %thead
           %tr
-            %th Name
+            %th Project
             %th Published
-            %th View
         %tbody
           %tr(ng:repeat="project in projects")
             %td {{project.name}}
             %td {{project.published_at | date: 'fullDate'}}
             %td(ng:show="project.public_url")
               %a(href="{{project.public_url}}") View
+          %tr(ng:repeat="folder in unpublished")
+            %td {{folder.name}}
+            %td
+            %td
+              %a Publish
 
-      %div(ng:show="folders.length")
-        %h3 Unpublished Dropbox folder(s):
-        %ul
-          %li(ng:repeat="folder in folders")
-            [{{$index + 1}}] {{folder.name}}
-
-      %div(ng:show="!projects.length && !folders.length")
+      %div(ng:show="!projects.length && !unpublished.length")
         Add a sample project to your Dropbox folder?
