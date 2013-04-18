@@ -74,8 +74,6 @@ GEM
     do_sqlite3 (0.10.12)
       data_objects (= 0.10.12)
     dotenv (0.7.0)
-    dotenv-rails (0.7.0)
-      dotenv (= 0.7.0)
     dropbox-sdk (1.5.1)
       json
     erubis (2.7.0)
@@ -83,6 +81,7 @@ GEM
     execjs (1.4.0)
       multi_json (~> 1.0)
     fastercsv (1.5.5)
+    firebase_token_generator (1.0.1)
     foreman (0.63.0)
       dotenv (>= 0.7)
       thor (>= 0.13.6)
@@ -90,12 +89,16 @@ GEM
       tilt
     hashie (2.0.3)
     hike (1.2.2)
+    httparty (0.11.0)
+      multi_json (~> 1.0)
+      multi_xml (>= 0.5.2)
     json (1.5.5)
     json_pure (1.5.5)
       spruz (~> 0.2.8)
     method_source (0.8.1)
     mime-types (1.22)
     multi_json (1.0.4)
+    multi_xml (0.5.3)
     oauth (0.4.7)
     omniauth (1.1.4)
       hashie (>= 1.2, < 3)
@@ -154,10 +157,12 @@ DEPENDENCIES
   data_mapper (~> 1.2.0)
   dm-postgres-adapter
   dm-sqlite-adapter
-  dotenv-rails
+  dotenv
   dropbox-sdk
+  firebase_token_generator
   foreman
   haml
+  httparty
   multi_json (~> 1.0.3)
   omniauth
   omniauth-dropbox

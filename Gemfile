@@ -2,6 +2,9 @@ source 'https://rubygems.org'
 ruby '1.9.3'
 
 gem 'rake'
+gem 'dotenv', :groups => [:development, :test]
+gem 'firebase_token_generator'
+gem 'httparty'
 
 group :web do
   gem 'rack'
@@ -39,5 +42,3 @@ group :development do
   gem 'pry'
   gem 'shotgun'
 end
-
-gem 'dotenv-rails', :groups => [:development, :test]

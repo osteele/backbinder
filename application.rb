@@ -3,6 +3,7 @@ require './config/database'
 require './project'
 require './publisher'
 require './dropbox_source'
+require './firebase'
 
 class App < Sinatra::Base
   include ::Models
@@ -25,6 +26,16 @@ class App < Sinatra::Base
     coffee :application
   end
 
+  get '/user/info.json' do
+    content_type 'application/json'
+    user = User.get(session[:uid])
+    MultiJson.encode(
+      :id => user.id,
+      :email => user.email,
+      :token => Firebase.create_token({:uid => user.id})
+    )
+  end
+
   get '/projects.json' do
     content_type 'application/json'
     # return [401, MultiJson.encode(:error => "Unauthorized")] unless params[:id] == session[:uid].to_s
@@ -36,7 +47,9 @@ class App < Sinatra::Base
     content_type 'application/json'
     # return [401, MultiJson.encode(:error => "Unauthorized")] unless params[:id] == session[:uid].to_s
     user = User.get(session[:uid])
-    MultiJson.encode(DropboxSource.new(user.dropbox_access_token, user.dropbox_access_secret).folders('/').map { |name| {:name => name} })
+    folder_names = DropboxSource.new(user.dropbox_access_token, user.dropbox_access_secret).folders('/').map { |name| {:name => name} }
+    Firebase.set("users/#{user.id}/folders", folder_names)
+    MultiJson.encode(folder_names)
   end
 
   post '/folder/publish' do
@@ -45,8 +58,8 @@ class App < Sinatra::Base
     project = ::Project.new(params['name'])
     project.source = DropboxSource.new(user.dropbox_access_token, user.dropbox_access_secret)
     publisher = Publisher.new
-    url = publisher.publish(user, project)
-    "url"
+    publisher.publish(user, project)
+    "ok"
   end
 
   get '/waitlist' do

@@ -2,6 +2,20 @@
   projects = []
   folders = []
 
+  $http.get('/user/info.json')
+    .then (res) ->
+      userInfo = res.data
+      dataRef = new Firebase('https://backbinder.firebaseio.com');
+      dataRef.auth userInfo.token, (error, result) ->
+        console.log("Login Failed!", error) if error
+        return if error
+        # console.log('Authenticated successfully with payload:', result.auth)
+        # console.log('Auth expires at:', new Date(result.expires * 1000))
+      foldersRef = dataRef.child("users/#{userInfo.id}/folders")
+      foldersRef.on 'value', (nameSnapshot) ->
+        folders = nameSnapshot.val()
+        $scope.$apply merge
+
   reload = ->
     $http.get('/projects.json')
       .then (res) ->
@@ -10,9 +24,6 @@
         merge()
 
     $http.get('/folders.json')
-      .then (res) ->
-        folders = res.data
-        merge()
 
   reload()
 
